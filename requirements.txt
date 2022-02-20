@@ -1,3 +1,4 @@
-pygame
-numpy
-torch
+pygame >= 2.1.2
+numpy >= 1.22.2
+torch >= 1.10.2
+stable-baselines3 >= 1.4.0
