@@ -1,32 +1,47 @@
 from random import randrange
 
 GRID_SIZE = 32
-UP = (0, -1)
-DOWN = (0, 1)
-LEFT = (-1, 0)
-RIGHT = (1, 0)
-DIRECTIONS = [UP, RIGHT, DOWN, LEFT]
+
+MOVE_UP = (0, -1)
+MOVE_UPRIGHT = (1, -1)
+MOVE_RIGHT = (1, 0)
+MOVE_DOWNRIGHT = (1, 1)
+MOVE_DOWN = (0, 1)
+MOVE_DOWNLEFT = (-1, 1)
+MOVE_LEFT = (-1, 0)
+MOVE_UPLEFT = (-1, -1)
+
+STEP_LEFT = -1
+STEP_STRIGHT = 0
+STEP_RIGHT = 1
+DIRECTIONS = [MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT]
 
 
 class SnakeGame:
-    def __init__(self, positions=None, food=None):
+    def __init__(self):
         self._lives = 0
         self._maxscore = 0
-
-        if positions and food:
-            self._positions = positions
-            self._food = food
-        else:
-            self.reset()
+        self._positions = []
+        self._direction = MOVE_UP
+        self._food = (0, 0)
+        self.reset()
 
     def reset(self):
         self._positions = [(randrange(GRID_SIZE), randrange(GRID_SIZE))]
         self._lives += 1
+        self._direction = MOVE_UP
         self.newfood()
 
-    def move(self, direction) -> bool:
+    def setdirection(self, step):
+        idx = DIRECTIONS.index(self._direction) + step
+        idx += len(DIRECTIONS)
+        idx %= len(DIRECTIONS)
+        self._direction = DIRECTIONS[idx]
+
+    def move(self, step) -> bool:
+        self.setdirection(step)
         head = self._positions[0]
-        newpos = (head[0] + direction[0], head[1] + direction[1])
+        newpos = (head[0] + self._direction[0], head[1] + self._direction[1])
         if newpos[0] < 0 or newpos[0] >= GRID_SIZE:
             self.reset()
             return False
@@ -53,6 +68,7 @@ class SnakeGame:
             if nfood not in self.positions:
                 self._food = nfood
                 return
+
     @property
     def positions(self):
         return self._positions
@@ -71,7 +87,7 @@ class SnakeGame:
 
     @property
     def direction(self):
-        return DIRECTIONS.index(self._direction)
+        return self._direction
 
     @property
     def lives(self):

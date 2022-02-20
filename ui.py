@@ -2,7 +2,7 @@ import os
 import sys
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
-from game import GRID_SIZE, DIRECTIONS, UP, DOWN, LEFT, RIGHT
+from game import GRID_SIZE, DIRECTIONS, MOVE_UP, MOVE_LEFT, MOVE_DOWN, MOVE_RIGHT
 
 
 class GameUi:
@@ -15,8 +15,8 @@ class GameUi:
         self.screen = pygame.display.set_mode([self.SCREEN, self.SCREEN + 100])
         self.surface = pygame.Surface((self.SCREEN, self.SCREEN + 100))
         self.font = pygame.font.SysFont('Arial', 25)
-        self.clock = pygame.time.Clock()
-        self.move_direction = UP
+        # self.clock = pygame.time.Clock()
+        self.move_direction = MOVE_UP
         self._paused = False
 
     def draw_background(self) -> None:
@@ -30,10 +30,10 @@ class GameUi:
                                      pygame.Rect(x * self.CELL, y * self.CELL, self.CELL, self.CELL))
 
     def draw_gameelements(self, game) -> None:
+        food = game.food
         for s in game.positions:
             pygame.draw.rect(self.surface, (0, 0, 200),
                              pygame.Rect((s[0] * self.CELL, s[1] * self.CELL), (self.CELL, self.CELL)))
-        food = game.food
         pygame.draw.rect(self.surface, (250, 0, 0),
                          pygame.Rect((food[0] * self.CELL, food[1] * self.CELL), (self.CELL, self.CELL)))
 
@@ -41,7 +41,7 @@ class GameUi:
         pygame.draw.rect(self.surface, (0, 0, 0), pygame.Rect((0, self.SCREEN), (self.SCREEN, 100)))
         self.surface.blit(self.font.render(f"Points: {game.score}", False, (255, 255, 255), (0, 0, 0)), (5, self.SCREEN))
         self.surface.blit(self.font.render(f"Lives: {game.lives}", False, (255, 255, 255), (0, 0, 0)),
-                          (self.SCREEN - 110, self.SCREEN))
+                          (self.SCREEN/2, self.SCREEN))
         self.surface.blit(self.font.render(f"Max: {game.maxscore}", False, (255, 255, 255), (0, 0, 0)), (5, self.SCREEN + 30))
 
         if self.paused:
@@ -68,13 +68,13 @@ class GameUi:
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 self._paused = not self._paused
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-                self.set_direction(UP)
+                self.set_direction(MOVE_UP)
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
-                self.set_direction(DOWN)
+                self.set_direction(MOVE_DOWN)
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                self.set_direction(LEFT)
+                self.set_direction(MOVE_LEFT)
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                self.set_direction(RIGHT)
+                self.set_direction(MOVE_RIGHT)
 
     @property
     def direction(self):
@@ -85,10 +85,9 @@ class GameUi:
         return self._paused
 
     def draw(self, game) -> None:
-        self.clock.tick(8)
+        # self.clock.tick(60)
 
         self.check_events()
-
         self.draw_background()
         self.draw_gameelements(game)
         self.draw_summary(game)
