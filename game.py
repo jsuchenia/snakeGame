@@ -1,6 +1,6 @@
 from random import randrange
 
-GRID_SIZE = 32
+GRID_SIZE = 48
 
 MOVE_UP = (0, -1)
 MOVE_UPRIGHT = (1, -1)

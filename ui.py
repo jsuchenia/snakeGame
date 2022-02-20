@@ -15,7 +15,7 @@ class GameUi:
         self.screen = pygame.display.set_mode([self.SCREEN, self.SCREEN + 100])
         self.surface = pygame.Surface((self.SCREEN, self.SCREEN + 100))
         self.font = pygame.font.SysFont('Arial', 25)
-        # self.clock = pygame.time.Clock()
+        self.clock = pygame.time.Clock()
         self.move_direction = MOVE_UP
         self._paused = False
 
@@ -43,9 +43,10 @@ class GameUi:
         self.surface.blit(self.font.render(f"Lives: {game.lives}", False, (255, 255, 255), (0, 0, 0)),
                           (self.SCREEN/2, self.SCREEN))
         self.surface.blit(self.font.render(f"Max: {game.maxscore}", False, (255, 255, 255), (0, 0, 0)), (5, self.SCREEN + 30))
+        self.surface.blit(self.font.render(f"FPS: {self.clock.get_fps():.2f}", False, (255, 255, 255), (0, 0, 0)), (self.SCREEN/2, self.SCREEN + 30))
 
         if self.paused:
-            self.surface.blit(self.font.render("Paused", False, (255, 255, 255), (0, 0, 0)), (45, self.SCREEN + 60))
+            self.surface.blit(self.font.render("Paused", False, (255, 255, 255), (0, 0, 0)), (250, self.SCREEN + 60))
 
     def set_direction(self, new) -> None:
         c = DIRECTIONS.index(self.move_direction)
@@ -85,7 +86,7 @@ class GameUi:
         return self._paused
 
     def draw(self, game) -> None:
-        # self.clock.tick(60)
+        self.clock.tick()
 
         self.check_events()
         self.draw_background()
