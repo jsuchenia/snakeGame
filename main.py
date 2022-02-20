@@ -28,10 +28,13 @@ if __name__ == '__main__':
     game = SnakeGame()
     ui = GameUi()
     simpleai = SimpleGameAI(game)
+    c = 0
 
     while True:
         ui.draw(game)
         if not ui.paused:
             # step = getstep(ui, game)
             step = simpleai.next()
-            game.move(step)
+            if not game.move(step):
+                c += 1
+                print(f"Finished tour {c} - max {game.maxscore}")
