@@ -26,8 +26,16 @@ class SimpleGameAI:
             if newpos in self._game.positions: continue
             if newpos[0] < 0 or newpos[0] >= GRID_SIZE: continue
             if newpos[1] < 0 or newpos[1] >= GRID_SIZE: continue
-            if abs(nidx - state.direction) == 2: continue
 
-            return nidx - state.direction
+            diff = nidx - state.direction
+            if abs(diff) == 2: continue
+
+            if diff < -1:
+                diff += len(DIRECTIONS)
+
+            if diff > 1:
+                diff -= len(DIRECTIONS)
+
+            return diff
 
         return randrange(-1, 2)

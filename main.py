@@ -37,7 +37,7 @@ if __name__ == '__main__':
     # Game elements
     game = SnakeGame()
     simpleai = SimpleGameAI(game)
-    supervised = SupervisedNN(flag_training)
+    supervised = SupervisedNN(flag_training, [128, 512])
 
     if flag_ui:
         ui = GameUi()
@@ -60,7 +60,11 @@ if __name__ == '__main__':
 
             result = game.move(step)
 
-            if result:
+            if result and args.mode == "train":
                 supervised.train(state, step)
-            else:
+
+                # if game.lives > 500:
+                #     break
+
+            if not result:
                 print(f"Finished tour {game.lives} - max {game.maxscore}")

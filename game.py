@@ -37,11 +37,13 @@ class SnakeGame:
         self._positions = []
         self._direction = MOVE_UP
         self._food = (0, 0)
+        self._steps = 0
         self.reset()
 
     def reset(self):
         self._positions = [(randrange(GRID_SIZE), randrange(GRID_SIZE))]
         self._lives += 1
+        self._steps = 0
         self._direction = MOVE_UP
         self.newfood()
 
@@ -69,10 +71,16 @@ class SnakeGame:
 
         self._positions.insert(0, newpos)
         if newpos == self.food:
+            self._steps = 0
             self.newfood()
             self._maxscore = max(self._maxscore, len(self._positions))
         else:
             self._positions.pop()
+            self._steps += 1
+
+        if self._steps > 10*GRID_SIZE:
+            self.reset()
+            return False
         return True
 
     def newfood(self):
