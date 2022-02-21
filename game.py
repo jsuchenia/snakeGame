@@ -18,7 +18,7 @@ STEP_RIGHT = 1
 DIRECTIONS = [MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT]
 
 
-class SnakeGameStatus(typing.NamedTuple):
+class SnakeGameState(typing.NamedTuple):
     headx: int
     heady: int
     foodx: int
@@ -107,7 +107,7 @@ class SnakeGame:
     def getstate(self):
         head = self._positions[0]
 
-        return SnakeGameStatus(
+        return SnakeGameState(
             headx=head[0],
             heady=head[1],
             foodx=self._food[0],

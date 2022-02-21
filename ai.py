@@ -16,7 +16,7 @@ class SimpleGameAI:
 
         if state.foody < state.heady:
             directions.insert(0, MOVE_UP)
-        elif state.heady > state.heady:
+        elif state.foody > state.heady:
             directions.insert(0, MOVE_DOWN)
 
         for move in directions + DIRECTIONS:

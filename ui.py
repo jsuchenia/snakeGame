@@ -85,8 +85,8 @@ class GameUi:
     def paused(self):
         return self._paused
 
-    def draw(self, game) -> None:
-        self.clock.tick()
+    def draw(self, game, slow=False) -> None:
+        self.clock.tick(10 if slow else 0)
 
         self.check_events()
         self.draw_background()
