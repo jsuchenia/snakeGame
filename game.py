@@ -1,4 +1,5 @@
 from random import randrange
+import typing
 
 GRID_SIZE = 48
 
@@ -15,6 +16,18 @@ STEP_LEFT = -1
 STEP_STRIGHT = 0
 STEP_RIGHT = 1
 DIRECTIONS = [MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT]
+
+
+class SnakeGameStatus(typing.NamedTuple):
+    headx: int
+    heady: int
+    foodx: int
+    foody: int
+    size: int
+    direction: int
+    onleft: bool
+    onstraight: bool
+    onright: bool
 
 
 class SnakeGame:
@@ -68,6 +81,43 @@ class SnakeGame:
             if nfood not in self.positions:
                 self._food = nfood
                 return
+
+    def _iscellvalid(self, x:int , y:int) -> bool:
+        if x < 0 or x >= GRID_SIZE:
+            return False
+
+        if y < 0 or y >= GRID_SIZE:
+            return False
+
+        if (x, y) in self._positions:
+            return False
+        return True
+
+    def _checkdirection(self, offset:int) -> bool:
+        head = self._positions[0]
+        direction = DIRECTIONS.index(self._direction)
+        newoffset = direction + offset
+        if newoffset < 0: newoffset += len(DIRECTIONS)
+        if newoffset >= len(DIRECTIONS): newoffset -= len(DIRECTIONS)
+
+        diff = DIRECTIONS[newoffset]
+
+        return self._iscellvalid(head[0] + diff[0], head[1] + diff[1])
+
+    def getstate(self):
+        head = self._positions[0]
+
+        return SnakeGameStatus(
+            headx=head[0],
+            heady=head[1],
+            foodx=self._food[0],
+            foody=self._food[1],
+            size=len(self._positions),
+            direction=DIRECTIONS.index(self._direction),
+            onleft=self._checkdirection(-1),
+            onstraight=self._checkdirection(0),
+            onright=self._checkdirection(1)
+        )
 
     @property
     def positions(self):

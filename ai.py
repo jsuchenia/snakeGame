@@ -6,32 +6,28 @@ class SimpleGameAI:
         self._game = game
 
     def next(self) -> int:
-        pos = self._game.positions
-        food = self._game.food
-        direction = self._game.direction
-        head = pos[0]
-        idx = DIRECTIONS.index(direction)
+        state = self._game.getstate()
         directions = []
 
-        if food[0] > head[0]:
+        if state.foodx > state.headx:
             directions.insert(0, MOVE_RIGHT)
-        elif food[0] < head[0]:
+        elif state.foodx < state.headx:
             directions.insert(0, MOVE_LEFT)
 
-        if food[1] < head[1]:
+        if state.foody < state.heady:
             directions.insert(0, MOVE_UP)
-        elif food[1] > head[1]:
+        elif state.heady > state.heady:
             directions.insert(0, MOVE_DOWN)
 
         for move in directions + DIRECTIONS:
-            newpos = (head[0] + move[0], head[1] + move[1])
+            newpos = (state.headx + move[0], state.heady + move[1])
             nidx = DIRECTIONS.index(move)
 
-            if newpos in pos: continue
+            if newpos in self._game.positions: continue
             if newpos[0] < 0 or newpos[0] >= GRID_SIZE: continue
             if newpos[1] < 0 or newpos[1] >= GRID_SIZE: continue
-            if abs(nidx - idx) == 2: continue
+            if abs(nidx - state.direction) == 2: continue
 
-            return nidx - idx
+            return nidx - state.direction
 
         return randrange(-1, 2)
