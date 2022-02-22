@@ -50,13 +50,15 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--batch', type=int, default=10, help="Traiing batch size")
     parser.add_argument('--samples', type=int, default=10000, help="Training samples")
-    parser.add_argument('--skip', action=argparse.BooleanOptionalAction, help="Skip duplicates")
+    parser.add_argument('--skip', action=argparse.BooleanOptionalAction, help="Skip duplicates", default=True)
     parser.add_argument('layers', metavar='layersize', type=int, nargs='+', help='hodden size layers')
     args = parser.parse_args()
 
     suffix = '-'.join([str(layer) for layer in args.layers])
     skip = "skip" if args.skip else "noskip"
-    modelfile = f"models/experiment_batch{args.batch}_samples{args.samples}_{skip}-{suffix}"
+
+    modelsuffix = f"batch{args.batch}_samples{args.samples}_{skip}-{suffix}"
+    modelfile = f"models/experiment_{modelsuffix}"
 
     supervised = SupervisedNN(True, modelfile=modelfile, batchsize=args.batch, layers=args.layers)
     samples = 1
@@ -84,4 +86,4 @@ if __name__ == '__main__':
     plt.xlabel("Number of samples")
     plt.ylabel("Max achieved points")
     plt.plot(x, y)
-    plt.savefig("out/experiment-" + suffix)
+    plt.savefig("out/experiment-" + modelsuffix)
