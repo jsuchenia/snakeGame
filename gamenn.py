@@ -13,7 +13,7 @@ class SupervisedNN:
             elements = []
             for i in range(len(layers)):
                 if i == 0:
-                    elements.append(nn.Linear(9, layers[i]))
+                    elements.append(nn.Linear(10, layers[i]))
                 else:
                     elements.append(nn.Linear(layers[i-1], layers[i]))
                 elements.append(nn.ReLU())
@@ -24,59 +24,77 @@ class SupervisedNN:
         def forward(self, x):
             return self.stack(x)
 
-    def __init__(self, training: bool, layers, prefix="model"):
+    def __init__(self, training: bool, layers, modelfile):
         self._training = training
         self.model = SupervisedNN.GameNN(layers)
-        suffix = '-'.join([str(layer) for layer in layers])
-        self._modelpath = f"models/{prefix}-{suffix}"
+
+        if modelfile:
+            self._modelpath = modelfile
+
+        self.loss_fn = nn.CrossEntropyLoss()
+        self.optimizer = torch.optim.SGD(self.model.parameters(), lr=0.01)
 
         if self._modelpath and os.path.exists(self._modelpath):
             self.model.load_state_dict(torch.load(self._modelpath))
 
-        self.loss_fn = nn.CrossEntropyLoss()
-        self.optimizer = torch.optim.SGD(self.model.parameters(), lr=0.001, momentum=0.9)
-
         self.inputs = []
         self.outputs = []
         self.trained_samples = 0
+
+        if training:
+            self.model.train()
+        else:
+            self.model.eval()
 
     def getstatetorch(self, state:SnakeGameState):
         return [state.headx,
                  state.heady,
                  state.foodx,
                  state.foody,
+                 state.foodx-state.headx,
+                 state.foody-state.heady,
                  state.direction,
-                 state.size,
                  state.onleft,
                  state.onstraight,
                  state.onright]
 
+    def trainmode(self):
+        self.model.train(True)
+
+    def usemode(self):
+        self.model.train(False)
+
     def train(self, state: SnakeGameState, direction: int) -> None:
         self.inputs.append(self.getstatetorch(state))
         output = [0, 0, 0]
-        output[direction+1] = 1
+        output[direction + 1] = 1
         self.outputs.append(output)
 
-        if len(self.inputs) >= 10000:
-            inp = torch.tensor(self.inputs, dtype=torch.float)
-            out = self.model(inp)
-
-            outputs = torch.tensor(self.outputs, dtype=torch.float)
-            loss = self.loss_fn(out, outputs)
+        if len(self.inputs) >= 10:
+            self.trained_samples += len(self.inputs)
             self.optimizer.zero_grad()
+
+            inputstensor = torch.tensor(self.inputs, dtype=torch.float)
+            outputstensor = torch.tensor(self.outputs, dtype=torch.float)
+
+            result = self.model(inputstensor)
+            loss = self.loss_fn(result, outputstensor)
+
             loss.backward()
             self.optimizer.step()
 
-            self.trained_samples += len(self.inputs)
             self.inputs.clear()
             self.outputs.clear()
 
-            if self._modelpath:
-                torch.save(self.model.state_dict(), self._modelpath)
         return
+
+    def save(self):
+        if self._modelpath:
+            torch.save(self.model.state_dict(), self._modelpath)
 
     def next(self, state: SnakeGameState) -> int:
         input = torch.tensor([self.getstatetorch(state)], dtype=torch.float)
-        output = self.model(input)
-        o = int(output[0].argmax(0)) - 1
-        return o
+        with torch.no_grad():
+            output = self.model(input)
+            print(output[0])
+            return int(output[0].argmax(0).item()) - 1

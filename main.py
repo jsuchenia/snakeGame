@@ -27,7 +27,8 @@ def getstep(ui: GameUi, game: SnakeGame):
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
     parser = argparse.ArgumentParser(description='Play a game with a little bit of AI')
-    parser.add_argument('mode', choices=['play', 'playsimple', 'train', 'playAI'], default="play", type=str)
+    parser.add_argument('mode', choices=['play', 'playsimple', 'train', 'playAI'], default="play", type=str, help="Mode to play with")
+    parser.add_argument('modelfile', type=str, nargs='?', help="Path to neural network model")
     args = parser.parse_args()
 
     flag_training = True if args.mode == "train" else False
@@ -37,7 +38,7 @@ if __name__ == '__main__':
     # Game elements
     game = SnakeGame()
     simpleai = SimpleGameAI(game)
-    supervised = SupervisedNN(flag_training, [128, 512])
+    supervised = SupervisedNN(flag_training, modelfile="models/model", layers=[20, 40])
 
     if flag_ui:
         ui = GameUi()
@@ -68,3 +69,6 @@ if __name__ == '__main__':
 
             if not result:
                 print(f"Finished tour {game.lives} - max {game.maxscore}")
+
+                if game.lives % 100 == 99:
+                    supervised.save()
