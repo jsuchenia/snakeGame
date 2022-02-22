@@ -81,8 +81,10 @@ if __name__ == '__main__':
             break
 
     title = f"Experiment batch={args.batch} samples={args.samples} "
+    title += "skip duplicates " if args.skip else "no-skip duplicates "
     title += " x ".join([str(x) for x in args.layers])
 
+    plt.title(title)
     plt.xlabel("Number of samples")
     plt.ylabel("Max achieved points")
     plt.plot(x, y)
