@@ -32,11 +32,10 @@ def getlayersfrompath(modelfile):
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
     parser = argparse.ArgumentParser(description='Play a game with a little bit of AI')
-    parser.add_argument('mode', choices=['play', 'playsimple', 'train', 'playAI'], default="play", type=str, help="Mode to play with")
+    parser.add_argument('mode', choices=['play', 'playsimple', 'playAI'], default="play", type=str, help="Mode to play with")
     parser.add_argument('modelfile', type=str, nargs='?', help="Path to neural network model")
     args = parser.parse_args()
 
-    flag_training = True if args.mode == "train" else False
     flag_ui = args.mode.startswith("play")
     flag_slow = True if args.mode == "play" else False
 
@@ -50,7 +49,7 @@ if __name__ == '__main__':
     # Game elements
     game = SnakeGame()
     simpleai = SimpleGameAI(game)
-    supervised = SupervisedNN(flag_training, modelfile=modelfile, layers=layers)
+    supervised = SupervisedNN(False, modelfile=modelfile, layers=layers)
 
     if flag_ui:
         ui = GameUi()
@@ -73,11 +72,8 @@ if __name__ == '__main__':
 
             result = game.move(step)
 
-            if result and args.mode == "train":
-                supervised.train(state, step)
-
-                # if game.lives > 500:
-                #     break
+            # if game.lives > 500:
+            #     break
 
             if not result:
                 print(f"Finished tour {game.lives} - max {game.maxscore}")
