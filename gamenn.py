@@ -24,9 +24,10 @@ class SupervisedNN:
         def forward(self, x):
             return self.stack(x)
 
-    def __init__(self, training: bool, layers, modelfile):
+    def __init__(self, training: bool, layers, modelfile, batchsize=10):
         self._training = training
         self.model = SupervisedNN.GameNN(layers)
+        self.batchsize = batchsize
 
         if modelfile:
             self._modelpath = modelfile
@@ -70,7 +71,7 @@ class SupervisedNN:
         output[direction + 1] = 1
         self.outputs.append(output)
 
-        if len(self.inputs) >= 10:
+        if len(self.inputs) >= self.batchsize:
             self.trained_samples += len(self.inputs)
             self.optimizer.zero_grad()
 
@@ -96,5 +97,4 @@ class SupervisedNN:
         input = torch.tensor([self.getstatetorch(state)], dtype=torch.float)
         with torch.no_grad():
             output = self.model(input)
-            print(output[0])
             return int(output[0].argmax(0).item()) - 1

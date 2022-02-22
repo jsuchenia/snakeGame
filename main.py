@@ -24,6 +24,11 @@ def getstep(ui: GameUi, game: SnakeGame):
     return step
 
 
+def getlayersfrompath(modelfile):
+    idx = modelfile.find("-")
+    return [int(x) for x in modelfile[idx+1:].split("-")]
+
+
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
     parser = argparse.ArgumentParser(description='Play a game with a little bit of AI')
@@ -35,10 +40,17 @@ if __name__ == '__main__':
     flag_ui = args.mode.startswith("play")
     flag_slow = True if args.mode == "play" else False
 
+    if args.modelfile:
+        modelfile = args.modelfile
+        layers = getlayersfrompath(modelfile)
+    else:
+        modelfile="models/model"
+        layers=[20, 40]
+
     # Game elements
     game = SnakeGame()
     simpleai = SimpleGameAI(game)
-    supervised = SupervisedNN(flag_training, modelfile="models/model", layers=[20, 40])
+    supervised = SupervisedNN(flag_training, modelfile=modelfile, layers=layers)
 
     if flag_ui:
         ui = GameUi()
