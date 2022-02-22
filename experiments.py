@@ -48,8 +48,9 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
 
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--batch', type=int, default=10, help="Traiing batch size")
-    parser.add_argument('--samples', type=int, default=10000, help="Training samples")
+
+    parser.add_argument('--batch', type=int, default=10, help="Traiing batch size (default: 10)")
+    parser.add_argument('--samples', type=int, default=10000, help="Training samples (default: 10000)")
     parser.add_argument('--skip', action=argparse.BooleanOptionalAction, help="Skip duplicates", default=True)
     parser.add_argument('layers', metavar='layersize', type=int, nargs='+', help='hodden size layers')
     args = parser.parse_args()
