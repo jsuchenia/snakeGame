@@ -2,7 +2,8 @@ import os
 import sys
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
-from game import GRID_SIZE, DIRECTIONS, MOVE_UP, MOVE_LEFT, MOVE_DOWN, MOVE_RIGHT
+
+from game.game import GRID_SIZE, DIRECTIONS, MOVE_UP, MOVE_LEFT, MOVE_DOWN, MOVE_RIGHT
 
 
 class GameUi:

@@ -1,4 +1,4 @@
-from game import SnakeGame, SnakeGameState
+from game.game import SnakeGame, SnakeGameState
 
 import torch
 from torch import nn

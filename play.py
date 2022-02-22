@@ -2,10 +2,10 @@ import sys
 import signal
 import argparse
 
-from game import SnakeGame, DIRECTIONS
-from ui import GameUi
-from ai import SimpleGameAI
-from gamenn import SupervisedNN
+from game.game import SnakeGame, DIRECTIONS
+from game.ui import GameUi
+from game.ai import SimpleGameAI
+from game.gamenn import SupervisedNN
 
 
 def signal_handler(step, frame) -> None:

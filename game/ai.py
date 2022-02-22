@@ -1,4 +1,4 @@
-from game import SnakeGame, GRID_SIZE, DIRECTIONS, MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT
+from game.game import SnakeGame, GRID_SIZE, DIRECTIONS, MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT
 from random import randrange
 
 class SimpleGameAI:

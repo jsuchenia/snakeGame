@@ -3,9 +3,9 @@ import signal
 import argparse
 import matplotlib.pyplot as plt
 
-from game import SnakeGame
-from ai import SimpleGameAI
-from gamenn import SupervisedNN
+from game.game import SnakeGame
+from game.ai import SimpleGameAI
+from game.gamenn import SupervisedNN
 
 
 def signal_handler(step, frame) -> None:
