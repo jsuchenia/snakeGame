@@ -36,7 +36,6 @@ if __name__ == '__main__':
     parser.add_argument('modelfile', type=str, nargs='?', help="Path to neural network model")
     args = parser.parse_args()
 
-    flag_ui = args.mode.startswith("play")
     flag_slow = True if args.mode == "play" else False
 
     if args.modelfile:
@@ -51,16 +50,12 @@ if __name__ == '__main__':
     simpleai = SimpleGameAI(game)
     supervised = SupervisedNN(False, modelfile=modelfile, layers=layers)
 
-    if flag_ui:
-        ui = GameUi()
-    else:
-        ui = None
+    ui = GameUi()
 
     while True:
-        if flag_ui:
-            ui.draw(game, flag_slow)
+        ui.draw(game, flag_slow)
 
-        if not flag_ui or not ui.paused:
+        if not ui.paused:
             state = game.getstate()
 
             if args.mode == "play":
